@@ -1,0 +1,29 @@
+The page rank for a page is the probability that a random surfer is going to visit that
+particular page. In our iterative page rank algorithm, we calculate the page rank mainly based on the number of inlinks
+to the given page. Number of inlinks is then used as a simple measure to calculate the page
+rank of a page, in this approach we assume that a web page is popular if there are many links from
+other pages pointing the given page. If we observe the documents in the list of top 50 pages by
+inlink count and top 50 pages by page rank from the result, Page rank for document with high inlink
+count is higher than other documents but not the highest. There can be multiple inlinks to the given
+document from a single page, some of the links might direct to sink page, ie pages with no outlinks and some may result in
+loops.Some pages which have higher inlinks still do not come up in page rank as they could have lots of outlinks as well.
+
+Many a times user might not be interested in the documents with high page rank, our page
+rank computaion is solely based on inlink count and there can be possibility that owner of the
+webpage can increase the popularity by including links to his page in the popular pages. Several
+methods can be employed to increase the inlink count for a particular page. The inlink count doesn't
+consider the quality of page while calculating page rank. The quality of page can be considered by
+taking into account the anchor text in the link and ignoring the links in the comments section. The
+user query context can also be considered in determining the quality of a page. This leads to higher quality pages
+and Inlink count is just theoretical way for calculating the page rank and there is possibility that user will be interested in a
+page other than the page with highest page rank due to the circumstances in which user is querying
+the web.
+
+In our results, the pages with high page rank values are mostly the related to news, since
+news is popular among the users and there are several other pages that point to a particular news
+article and the news articles inturn link to different webpages. The links to the pages from a popular
+page will also have high pagerank values due to the fact that there is high probability that a user will
+visit the links given in a popular page.The inlink count approach is a simple way to measure page rank, 
+inorder to calculate the page rank accurately to user needs and dynamically changing contents of webpage but we also need to
+consider other things like user search context and quailty of the pages based on the content and not based on the 
+inlinks, usablity of links, location and popular current events happening in the internet.
