@@ -1,0 +1,3 @@
+Steps to run PageRank project
+
+PageRank.py <WT2g collection txt file>
