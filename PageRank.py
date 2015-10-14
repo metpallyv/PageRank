@@ -23,21 +23,24 @@ def parse_file(inlink):
         words = string.split(line)
         inlink_dict[words[0]] = words[1:]
         Pages.append(words[0])
+
     len_dic = float(len(Pages))
     for page in Pages:
         PRank[page] = float(1) / len_dic
+
     for page in inlink_dict.keys():
         for q in inlink_dict[page]:
             if outlink_dict.has_key(q):
                 outlink_dict[q] += 1
             else:
                 outlink_dict[q] = 1
+
     for page in inlink_dict.keys():
         if not outlink_dict.has_key(page):
             sinknodes.append(page)
     #print (len(sinknodes))
     
-#Page rank dump    
+#Page rank dump
 def dump_pagerank():
     print("Dumping the page rank:")
     for page in PRank.keys():
@@ -50,43 +53,14 @@ def cal_Perplexity():
         hx += PRank[page]*log(1/PRank[page],2)
     return 2**hx
 
-#checking for convergence
-def check_for_convergence(perp_list):
-    frac1,val1 = modf(perp_list[0])
-    frac2, val2 = modf(perp_list[1])
-    frac3, val3 = modf(perp_list[2])
-    frac4, val4 = modf(perp_list[3])
-    if ((val1 == val2) and (val2 == val3) and (val3 == val4)):
-        return True
-    else:
-        return False
-
-#calculating page rank
+#calculating page rank and checking for convergence at the same time
 def cal_pagerank():
-    ite= 0
+    i= 0
+    perplexity = 0
     len_dic = float(len(inlink_dict.keys()))
-    perp_list = []
-    perplexity = cal_Perplexity()
-    perp_list.append(perplexity)
-    print("Perplexity for iteration",ite,"is",perplexity)
-    ite = ite +1
-    while(ite <=3):
-        SinkPageRank = 0
-        for page in sinknodes:
-            SinkPageRank = SinkPageRank + PRank.get(page)
-        for page in inlink_dict.keys():
-            new_PRank[page] = float(1.0 - d) / len_dic
-            new_PRank[page] = new_PRank[page] + float(d * SinkPageRank) / len_dic
-            for q in inlink_dict[page]:
-                new_PRank[page] = new_PRank[page] + float(d * PRank.get(q)) / outlink_dict.get(q)
-        for page in new_PRank.keys():
-            PRank[page] = new_PRank.get(page)
-        perplexity = cal_Perplexity()
-        perp_list.append(perplexity)
-        print("Perplexity for iteration",ite,"is",perplexity)
-        ite = ite+1
-    #check_for_convergence
-    while(not check_for_convergence(perp_list)):
+    ite = 0
+    #while not converged
+    while(i <4):
         SinkPageRank = 0
         for page in sinknodes:
             SinkPageRank = float(SinkPageRank + PRank.get(page))
@@ -97,16 +71,18 @@ def cal_pagerank():
                 new_PRank[page] = new_PRank[page] + (d * float(PRank.get(q)) / float(outlink_dict.get(q)))
         for page in new_PRank.keys():
             PRank[page] = new_PRank.get(page)
-        perplexity = cal_Perplexity()
-        print("Perplexity for iteration",ite,"is",perplexity)
-        ite = ite +1
-        temp = []
-        temp = perp_list[1:]
-        temp.append(perplexity)
-        perp_list = temp
-        #dump_pagerank()
+        perplexity_new = cal_Perplexity()
+        val1 = round(perplexity,3)
+        val = round(perplexity_new,3)
+        if val1 == val :
+        	i = i+1
+        else:
+        	i = 0
+        perplexity = perplexity_new
+        print("Perplexity for iteration",ite,"is",perplexity_new)
+	ite = ite+1
 
-#retrieve top k ranks documents
+#retrieve top k documents
 def top_rank():
     SortedPR = sorted(PRank.iteritems(), key=operator.itemgetter(1), reverse=True)
     for i in range(50):
@@ -114,7 +90,7 @@ def top_rank():
 inlink_rank = {}
 
 #retreive top k inlink ranked pages
-def top_inkink():
+def top_inlink():
     #SortedInlink = sorted(inlink_dict.iteritems(), key=operator.itemgetter(1), reverse=True)
     for page in inlink_dict.keys():
         inlink_rank[page] = len(inlink_dict.get(page))
@@ -128,6 +104,6 @@ if __name__ == "__main__":
         parse_file(inlink)
         cal_pagerank()
         top_rank()
-        top_inkink()
+        top_inlink()
     else:
         print("Enter the inlink file for which page link should be calculated")
